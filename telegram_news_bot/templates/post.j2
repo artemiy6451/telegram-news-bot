@@ -1,11 +1,27 @@
-*{{ name }}*
+<b>{{ name }}</b>
 
-_{{ author }}_ - {{ date }} - {{ difficulty }}- {{ time_to_read }}
+<i>{{ author }}</i> - {{ date }} - {{ difficulty }} - {{ time_to_read }}
 
 {{ description }}
 
-{{ tags }}
+{% if tag %}
+{% for tag in tags %}
+{% if loop.last %}
+{{tag.name}}
+{% else %}
+{{ tag.name }}, 
+{% endif %}
+{% endfor %}
+{% endif %}
 
-{{ labels }}
+{% if label %}
+{% for label in labels %}
+{% if loop.last %}
+{{label.name}}
+{% else %}
+{{ label.name }}, 
+{% endif %}
+{% endfor %}
+{% endif %}
 
 {{ url }}

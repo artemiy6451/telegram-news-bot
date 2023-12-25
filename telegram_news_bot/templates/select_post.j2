@@ -1,0 +1,29 @@
+select 
+	post.id, 
+	post.author, 
+	post.name, 
+	post.difficulty, 
+	post.time_to_read,
+	(
+		select 
+			group_concat(tag.name, ', ')
+		from tags
+		join tag
+			on tags.tag_id = tag.id
+		where tags.post_id = post.id
+	) as tags,
+	(
+		select 
+			group_concat(label.name, ', ')
+		from labels
+		join label
+			on labels.label_id = label.id
+		where labels.post_id = post.id
+	) as labels,
+	post.description,
+	post.published, 
+	post.url
+from post
+where 
+    post.name = '{{ name }}'
+    and post.author = '{{ author }}';

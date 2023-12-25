@@ -12,7 +12,7 @@ from fake_headers import Headers
 from loguru import logger
 
 from telegram_news_bot.config import settings
-from telegram_news_bot.schemas import Article
+from telegram_news_bot.schemas import Label, Post, Tag
 
 URL: str = "https://habr.com/ru/articles/page{}"
 
@@ -31,30 +31,30 @@ class Parser:
     def parse(self):
         """Parse data from first `n` pages of habr.
 
-        Return list[Article] from all pages.
+        Return list[Post] from all pages.
         """
         logger.debug("Parsig habr site.")
-        articles: list[Article] = []
+        articles: list[Post] = []
         for page_number in range(1, settings.page_count_to_check + 1):
-            # page = self.__get_page(page_number)
-            with open("index.html", "r") as file:
-                page = file.read()
+            page = self.__get_page(page_number)
+            # with open("index.html", "r") as file:
+            #    page = file.read()
             if page is None:
                 continue
             articles.extend(self.__parse_page(page, page_number))
             sleep(0.3)
         return articles
 
-    def __parse_page(self, page, page_number) -> list[Article]:
+    def __parse_page(self, page, page_number) -> list[Post]:
         logger.debug(f"Parsig page #{page_number}.")
         soup = BeautifulSoup(page, "lxml")
         raw_articles: ResultSet = soup.find_all(
             "article", class_="tm-articles-list__item"
         )
-        parsed_articles: list[Article] = []
+        parsed_articles: list[Post] = []
         for article in raw_articles:
             parsed_articles.append(
-                Article(
+                Post(
                     author=self.__parse_author(article),
                     name=self.__parse_name(article),
                     difficulty=self.__parse_difficulty(article),
@@ -106,26 +106,27 @@ class Parser:
             logger.debug(f"Can not parse time to read: {e}")
             return None
 
-    def __parse_labels(self, content) -> tuple[str, ...] | None:
+    def __parse_labels(self, content) -> tuple[Label, ...] | None:
         logger.debug("Parsing article labels.")
         raw_labels = content.find_all("div", class_="tm-publication-label")
-        parsed_labels: tuple[str, ...] = ()
+        parsed_labels: tuple[Label, ...] = ()
         for label in raw_labels:
             try:
-                parsed_labels += (label.find("span").text.strip(),)
+                parsed_labels += (Label(name=label.find("span").text.strip()),)
             except AttributeError:
-                parsed_labels += (label.find("a").text.strip(),)
+                parsed_labels += (Label(name=label.find("a").text.strip()),)
 
         if parsed_labels:
             return parsed_labels
         return None
 
-    def __parse_tags(self, article) -> tuple[str, ...] | None:
+    def __parse_tags(self, article) -> tuple[Tag, ...] | None:
         logger.debug("Parsing article tags.")
         try:
             raw_tags = article.find_all("a", class_="tm-publication-hub__link")
+            # TODO: Refactor this
             parsed_tags = tuple(
-                tag.find("span", class_="").text.strip() for tag in raw_tags
+                Tag(name=tag.find("span", class_="").text.strip()) for tag in raw_tags
             )
             return parsed_tags
         except AttributeError as e:
