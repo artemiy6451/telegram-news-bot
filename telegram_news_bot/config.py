@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     telegram_api: str = ""
     template_dir: str = "templates"
     channel_id: int = 0
+    update_time_for_parser_in_seconds: int = 3600
 
 
 settings = Settings()

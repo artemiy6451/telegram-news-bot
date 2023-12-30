@@ -1,5 +1,7 @@
 """File for telegram bot logic."""
 
+import time
+
 import telebot
 from loguru import logger
 from telebot.types import CallbackQuery, Message
@@ -14,13 +16,17 @@ bot = telebot.TeleBot(settings.telegram_api)
 @bot.channel_post_handler(commands=["start"])
 def send_manually_posts(message: Message):
     """Send posts to channel by click /start."""
+    print(message.chat.id)
     bot.delete_message(message.chat.id, message.id)
     send_posts(bot, message.chat.id, get_parsed_posts_form_habr())
 
 
-def send_automatic_posts(channel_id: int):
+def send_automatic_posts(bot: telebot.TeleBot, channel_id: int, update_time: int):
     """Automaticly send posts to channel."""
-    send_posts(bot, channel_id, get_parsed_posts_form_habr())
+    logger.debug("Start automatic send posts.")
+    while True:
+        send_posts(bot, channel_id, get_parsed_posts_form_habr())
+        time.sleep()
 
 
 @bot.callback_query_handler(func=lambda call: True)

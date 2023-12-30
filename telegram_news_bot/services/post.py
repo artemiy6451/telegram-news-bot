@@ -7,7 +7,7 @@ from telebot import TeleBot, traceback
 from telebot.util import quick_markup
 
 from telegram_news_bot.db import database_connection
-from telegram_news_bot.habr.parser import Parser
+from telegram_news_bot.parsers.habr import Parser
 from telegram_news_bot.schemas import Post
 from telegram_news_bot.templates import render_template
 
