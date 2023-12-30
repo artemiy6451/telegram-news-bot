@@ -26,7 +26,7 @@ def send_automatic_posts(bot: telebot.TeleBot, channel_id: int, update_time: int
     logger.debug("Start automatic send posts.")
     while True:
         send_posts(bot, channel_id, get_parsed_posts_form_habr())
-        time.sleep()
+        time.sleep(60)
 
 
 @bot.callback_query_handler(func=lambda call: True)

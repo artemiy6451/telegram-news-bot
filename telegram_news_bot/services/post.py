@@ -13,6 +13,7 @@ from telegram_news_bot.templates import render_template
 
 markup = quick_markup(
     {
+        "Summurize": {"callback_data": "summurize"},
         "Delete": {"callback_data": "delete"},
     }
 )
@@ -47,7 +48,7 @@ def send_posts(bot: TeleBot, chanel_id: int, posts: list[Post]):
         try:
             if is_exist_post(post):
                 continue
-            formated_message = render_template("post.j2", post.model_dump())
+            formated_message = render_template("send_post.j2", post.model_dump())
             logger.debug("Send message.")
             bot.send_message(
                 chanel_id,
