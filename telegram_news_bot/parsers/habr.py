@@ -38,7 +38,7 @@ class Parser:
         for page_number in range(1, settings.page_count_to_check + 1):
             page = self.__get_page(page_number)
             # with open("index.html", "r") as file:
-            #    page = file.read()
+            #   page = file.read()
             if page is None:
                 continue
             articles.extend(self.__parse_page(page, page_number))
