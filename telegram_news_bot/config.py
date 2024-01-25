@@ -11,12 +11,15 @@ class Settings(BaseSettings):
     database_path: Path = base_dir / "../database.db"
     model_config = SettingsConfigDict(env_file=".env")
 
-    page_count_to_check: int = 5
+    test_mode: bool = False
     log_level: str = "INFO"
-    telegram_api: str = ""
-    template_dir: str = "templates"
-    channel_id: int = 0
     update_time_for_parser_in_seconds: int = 3600
+    page_count_to_check: int = 5
+    channel_id: int = 0
+    template_dir: str = "templates"
+    telegram_api: str = ""
+
+    habr_url: str = "https://habr.com/ru/articles/page{}"
 
 
 settings = Settings()

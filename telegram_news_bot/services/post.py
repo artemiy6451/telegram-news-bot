@@ -4,18 +4,11 @@ import time
 
 from loguru import logger
 from telebot import TeleBot, traceback
-from telebot.util import quick_markup
 
 from telegram_news_bot.db import database_connection
 from telegram_news_bot.parsers.habr import Parser
 from telegram_news_bot.schemas import Post
 from telegram_news_bot.templates import render_template
-
-markup = quick_markup(
-    {
-        "Delete": {"callback_data": "delete"},
-    }
-)
 
 
 def get_parsed_posts_form_habr() -> list[Post]:
@@ -47,13 +40,12 @@ def send_posts(bot: TeleBot, chanel_id: int, posts: list[Post]):
         try:
             if is_exist_post(post):
                 continue
-            formated_message = render_template("post.j2", post.model_dump())
+            formated_message = render_template("send_post.j2", post.model_dump())
             logger.debug("Send message.")
             bot.send_message(
                 chanel_id,
                 formated_message,
                 parse_mode="HTML",
-                reply_markup=markup,
             )
             add_post_to_database(post)
             time.sleep(2.2)

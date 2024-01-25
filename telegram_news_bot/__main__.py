@@ -16,14 +16,23 @@ logger.add(
     diagnose=True,
 )
 
+if settings.test_mode:
+    events = [
+        [telegram_bot.infinity_polling, ()],
+    ]
+else:
+    events = [
+        [telegram_bot.infinity_polling, ()],
+        [
+            send_automatic_posts,
+            (
+                telegram_bot,
+                settings.channel_id,
+                settings.update_time_for_parser_in_seconds,
+            ),
+        ],
+    ]
 
-events = [
-    [telegram_bot.infinity_polling, ()],
-    [
-        send_automatic_posts,
-        (telegram_bot, settings.channel_id, settings.update_time_for_parser_in_seconds),
-    ],
-]
 
 threads = []
 
@@ -40,10 +49,10 @@ def main():
     for thread in threads:
         thread.join()
 
-    print(threads)
-
 
 try:
     main()
 except Exception as e:
     logger.error(f"Something went wrong: {e}")
+except KeyboardInterrupt:
+    logger.info("Shutdown program.")
