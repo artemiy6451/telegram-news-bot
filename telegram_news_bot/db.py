@@ -27,7 +27,7 @@ class DataBase:
             self.cursor.execute(insert_sql)
             self.connection.commit()
         except sqlite3.OperationalError as e:
-            logger.error(f"Operational error: {e}")
+            logger.error(f"Operational error: {e}\nSQL: {insert_sql}")
         except Exception:
             logger.error(f"Error while insert to database: {traceback.format_exc()}")
 
@@ -37,8 +37,8 @@ class DataBase:
         try:
             self.cursor.execute(select_sql)
             return self.cursor.fetchall()
-        except sqlite3.OperationalError:
-            logger.error(f"Operational error: {traceback.format_exc()}")
+        except sqlite3.OperationalError as e:
+            logger.error(f"Operational error: {e}\nSQL: {select_sql}")
         except Exception:
             logger.error(f"Error while insert to database: {traceback.format_exc()}")
 
