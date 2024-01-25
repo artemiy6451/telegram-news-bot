@@ -12,8 +12,6 @@ from loguru import logger
 from telegram_news_bot.config import settings
 from telegram_news_bot.schemas import Post
 
-URL: str = "https://habr.com/ru/articles/page{}"
-
 
 class Parser:
     """Class for parsing data from habr site."""
@@ -34,9 +32,12 @@ class Parser:
         logger.debug("Parsig habr site.")
         articles: list[Post] = []
         for page_number in range(1, settings.page_count_to_check + 1):
-            page = self.__get_page(page_number)
-            # with open("index.html", "r") as file:
-            #   page = file.read()
+            if settings.test_mode:
+                logger.warning("Running with test mode!")
+                with open(settings.base_dir / "../data" / "index.html", "r") as file:
+                    page = file.read()
+            else:
+                page = self.__get_page(page_number)
             if page is None:
                 continue
             articles.extend(self.__parse_page(page, page_number))
@@ -67,7 +68,7 @@ class Parser:
             return name.text.strip()
         except AttributeError as e:
             logger.debug(f"Can not parse article name: {e}\n {article}")
-            return "Template Name"
+            return "Article name"
 
     def __parse_time_to_read(self, article) -> str:
         logger.debug("Parsing article time to read.")
@@ -91,7 +92,7 @@ class Parser:
 
     def __get_page(self, page_number: int) -> str | None:
         logger.debug("Send get response to server.")
-        self.response = self.session.get(URL.format(page_number))
+        self.response = self.session.get(settings.habr_url.format(page_number))
         if self.response.status_code == HTTPStatus.OK:
             return self.response.text
         else:

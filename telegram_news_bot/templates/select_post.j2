@@ -1,8 +1,8 @@
 select 
 	post.id, 
 	post.name, 
-	post.time_to_read,
+    post.time_to_read,
 	post.url
 from post
 where 
-    post.name = '{{ name }}';
+    post.url = '{{ url }}';
