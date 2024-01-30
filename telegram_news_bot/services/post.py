@@ -5,6 +5,7 @@ import time
 from loguru import logger
 from telebot import TeleBot, traceback
 
+from telegram_news_bot.config import settings
 from telegram_news_bot.db import database_connection
 from telegram_news_bot.parsers.habr import HabrParser
 from telegram_news_bot.parsers.medium import MediumParser
@@ -64,7 +65,8 @@ def send_posts(bot: TeleBot, chanel_id: int, posts: list[Post]):
                 formated_message,
                 parse_mode="HTML",
             )
+            post.name = post.name.replace('"', "").replace("'", "").replace("’", "")
             add_post_to_database(post)
-            time.sleep(2.2)
+            time.sleep(settings.time_for_send_post)
         except Exception:
             logger.error(f"Error: {traceback.format_exc()}\nPost: {post.model_dump()}")
