@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     test_mode: bool = False
     log_level: str = "INFO"
     update_time_for_parser_in_seconds: int = 3600
+    time_for_send_post: int = 5
     page_count_to_check: int = 5
     channel_id: int = 0
     template_dir: str = "templates"
