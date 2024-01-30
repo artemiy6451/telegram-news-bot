@@ -9,7 +9,7 @@ from telebot.types import CallbackQuery, Message
 from telegram_news_bot.config import settings
 from telegram_news_bot.db import database_connection
 from telegram_news_bot.schemas import Post
-from telegram_news_bot.services.post import get_parsed_posts_form_habr, send_posts
+from telegram_news_bot.services.post import get_parsed_posts_from_all_sites, send_posts
 from telegram_news_bot.templates import render_template
 
 logger.info("Start telegram bot.")
@@ -18,21 +18,21 @@ bot = telebot.TeleBot(settings.telegram_api)
 
 @bot.channel_post_handler(commands=["start"])
 def send_manually_posts(message: Message):
-    """Send posts to channel by click /start."""
-    print(message.chat.id)
+    """Send posts to channel by /start."""
+    logger.debug("Send posts to channel by /start.")
     bot.delete_message(message.chat.id, message.id)
-    send_posts(bot, message.chat.id, get_parsed_posts_form_habr())
+    send_posts(bot, message.chat.id, get_parsed_posts_from_all_sites())
 
 
 def send_automatic_posts(bot: telebot.TeleBot, channel_id: int, update_time: int):
     """Automaticly send posts to channel."""
     logger.debug("Start automatic send posts.")
     while True:
-        send_posts(bot, channel_id, get_parsed_posts_form_habr())
+        send_posts(bot, channel_id, get_parsed_posts_from_all_sites())
         time.sleep(update_time)
 
 
-@bot.callback_query_handler(func=lambda call: True)
+@bot.callback_query_handler(func=lambda call: call.data == "delete")
 def delete_post(call: CallbackQuery):
     """Delete post form wall using inline keyboard."""
     logger.debug("Delete message.")

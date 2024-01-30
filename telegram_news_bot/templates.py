@@ -19,4 +19,5 @@ def render_template(template_name: str, data: dict | None) -> str:
         data = {}
     template = env.get_template(template_name)
     rendered = template.render(**data)
+    rendered = rendered.replace("'", '"')
     return rendered

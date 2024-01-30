@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     telegram_api: str = ""
 
     habr_url: str = "https://habr.com/ru/articles/page{}"
+    medium_url: str = "https://medium.com/_/graphql"
 
 
 settings = Settings()
