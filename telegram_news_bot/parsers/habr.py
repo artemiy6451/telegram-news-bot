@@ -13,7 +13,7 @@ from telegram_news_bot.config import settings
 from telegram_news_bot.schemas import Post
 
 
-class Parser:
+class HabrParser:
     """Class for parsing data from habr site."""
 
     def __init__(self) -> None:
@@ -24,7 +24,7 @@ class Parser:
             browser="chrome", os="win", headers=True
         ).generate()
 
-    def parse(self):
+    def parse(self) -> list[Post]:
         """Parse data from first `n` pages of habr.
 
         Return list[Post] from all pages.
@@ -34,7 +34,7 @@ class Parser:
         for page_number in range(1, settings.page_count_to_check + 1):
             if settings.test_mode:
                 logger.warning("Running with test mode!")
-                with open(settings.base_dir / "../data" / "index.html", "r") as file:
+                with open(settings.base_dir / "../data" / "habr.html", "r") as file:
                     page = file.read()
             else:
                 page = self.__get_page(page_number)
@@ -93,6 +93,8 @@ class Parser:
     def __get_page(self, page_number: int) -> str | None:
         logger.debug("Send get response to server.")
         self.response = self.session.get(settings.habr_url.format(page_number))
+        with open("data/habr.html", "wb") as file:
+            file.write(self.response.content)
         if self.response.status_code == HTTPStatus.OK:
             return self.response.text
         else:
