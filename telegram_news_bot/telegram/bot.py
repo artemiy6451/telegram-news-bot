@@ -21,9 +21,9 @@ def send_manually_posts(message: Message):
     send_posts(bot, message.chat.id, get_parsed_posts_from_all_sites())
 
 
-def send_automatic_posts(bot: telebot.TeleBot, channel_id: int, update_time: int):
+def send_automatic_posts(bot: telebot.TeleBot):
     """Automaticly send posts to channel."""
     logger.debug("Start automatic send posts.")
     while True:
-        send_posts(bot, channel_id, get_parsed_posts_from_all_sites())
-        time.sleep(update_time)
+        send_posts(bot, settings.channel_id, get_parsed_posts_from_all_sites())
+        time.sleep(settings.update_time_for_parser_in_seconds)

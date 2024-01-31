@@ -25,11 +25,7 @@ else:
         [telegram_bot.infinity_polling, ()],
         [
             send_automatic_posts,
-            (
-                telegram_bot,
-                settings.channel_id,
-                settings.update_time_for_parser_in_seconds,
-            ),
+            (telegram_bot,),
         ],
     ]
 
