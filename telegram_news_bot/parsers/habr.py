@@ -41,7 +41,7 @@ class HabrParser:
             if page is None:
                 continue
             articles.extend(self.__parse_page(page, page_number))
-            sleep(0.3)
+            sleep(settings.time_for_connect_to_server)
         return articles
 
     def __parse_page(self, page, page_number) -> list[Post]:

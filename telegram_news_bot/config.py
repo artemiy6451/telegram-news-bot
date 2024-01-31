@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     update_time_for_parser_in_seconds: int = 3600
     time_for_send_post: int = 5
+    time_for_connect_to_server: int = 1
     page_count_to_check: int = 5
     channel_id: int = 0
     template_dir: str = "templates"
@@ -22,6 +23,8 @@ class Settings(BaseSettings):
 
     habr_url: str = "https://habr.com/ru/articles/page{}"
     medium_url: str = "https://medium.com/_/graphql"
+
+    medium_tags: list[str] = ["programming"]
 
 
 settings = Settings()

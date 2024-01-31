@@ -45,15 +45,18 @@ def add_post_to_database(post: Post):
 
 def is_exist_post(post: Post) -> bool:
     """Check if post already in database."""
-    logger.debug("Check is post exist.")
+    logger.debug(f"Check is post with name {post.name} exist.")
     result = database_connection.select_post(post)
     if result:
+        logger.debug("Post in database.")
         return True
+    logger.debug("Post not in database.")
     return False
 
 
 def send_posts(bot: TeleBot, chanel_id: int, posts: list[Post]):
     """Send all posts to telegram chanel."""
+    logger.debug("Send all posts to telegram chanel.")
     for post in posts:
         try:
             if is_exist_post(post):
@@ -70,3 +73,4 @@ def send_posts(bot: TeleBot, chanel_id: int, posts: list[Post]):
             time.sleep(settings.time_for_send_post)
         except Exception:
             logger.error(f"Error: {traceback.format_exc()}\nPost: {post.model_dump()}")
+    logger.debug("All post sended.")
