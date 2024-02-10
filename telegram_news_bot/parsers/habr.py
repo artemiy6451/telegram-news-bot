@@ -10,10 +10,11 @@ from fake_headers import Headers
 from loguru import logger
 
 from telegram_news_bot.config import settings
+from telegram_news_bot.parser import Parser
 from telegram_news_bot.schemas import Post
 
 
-class HabrParser:
+class HabrParser(Parser):
     """Class for parsing data from habr site."""
 
     def __init__(self) -> None:
@@ -37,14 +38,14 @@ class HabrParser:
                 with open(settings.base_dir / "../data" / "habr.html", "r") as file:
                     page = file.read()
             else:
-                page = self.__get_page(page_number)
+                page = self._get_page(page_number)
             if page is None:
                 continue
-            articles.extend(self.__parse_page(page, page_number))
+            articles.extend(self._parse_page(page, page_number))
             sleep(settings.time_for_connect_to_server)
         return articles
 
-    def __parse_page(self, page, page_number) -> list[Post]:
+    def _parse_page(self, page, page_number) -> list[Post]:
         logger.debug(f"Parsig page #{page_number}.")
         soup = BeautifulSoup(page, "lxml")
         raw_articles: ResultSet = soup.find_all(
@@ -54,14 +55,14 @@ class HabrParser:
         for article in raw_articles:
             parsed_articles.append(
                 Post(
-                    name=self.__parse_name(article),
-                    time_to_read=self.__parse_time_to_read(article),
-                    url=self.__parse_url(article),
+                    name=self._parse_name(article),
+                    time_to_read=self._parse_time_to_read(article),
+                    url=self._parse_url(article),
                 )
             )
         return parsed_articles
 
-    def __parse_name(self, article) -> str:
+    def _parse_name(self, article) -> str:
         logger.debug("Parsing article name.")
         try:
             name = article.find("h2", class_="tm-title").find("span")
@@ -70,7 +71,7 @@ class HabrParser:
             logger.debug(f"Can not parse article name: {e}\n {article}")
             return "Article name"
 
-    def __parse_time_to_read(self, article) -> str:
+    def _parse_time_to_read(self, article) -> str:
         logger.debug("Parsing article time to read.")
         try:
             time_to_read = article.find("span", class_="tm-article-reading-time__label")
@@ -79,7 +80,7 @@ class HabrParser:
             logger.debug(f"Can not parse time to read: {e}\n {article}")
             return "0 min."
 
-    def __parse_url(self, article) -> str:
+    def _parse_url(self, article) -> str:
         logger.debug("Parsing article url.")
         try:
             url = "https://habr.com" + article.find("a", class_="tm-title__link").get(
@@ -90,7 +91,7 @@ class HabrParser:
             logger.debug(f"Can not parse url: {e}")
             return "https://habr.com"
 
-    def __get_page(self, page_number: int) -> str | None:
+    def _get_page(self, page_number: int) -> str | None:
         logger.debug("Send get response to server.")
         self.response = self.session.get(settings.habr_url.format(page_number))
         with open("data/habr.html", "wb") as file:
