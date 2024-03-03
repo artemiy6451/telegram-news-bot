@@ -1,4 +1,5 @@
 """File for import tamplates to project."""
+
 import jinja2
 
 from telegram_news_bot.config import settings

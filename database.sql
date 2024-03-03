@@ -1,3 +1,4 @@
+drop table if exists post;
 create table post(
     id integer primary key autoincrement,
     name varchar(150) not null,

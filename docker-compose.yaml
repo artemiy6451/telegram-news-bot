@@ -1,0 +1,13 @@
+version: '3'
+services: 
+  telegram-news-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - path: .env
+        required: true
+    image: telegram_news_bot
+    volumes: 
+      - ./data:/app/data
+    restart: always
