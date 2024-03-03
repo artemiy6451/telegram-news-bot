@@ -93,7 +93,7 @@ class MediumParser(Parser):
                     _from=_from, limit=limit, tag_slug=tag_slug
                 ),
             )
-            with open("data/medium.html", "wb") as file:
+            with open(settings.data_dir / "medium.html", "wb") as file:
                 file.write(response.content)
             if response.status_code == HTTPStatus.OK:
                 return response.json()
@@ -105,7 +105,7 @@ class MediumParser(Parser):
     def __test_mode_parse(self) -> dict | None:
         logger.warning("Running with test mode!")
         try:
-            with open(settings.base_dir / "../data" / "medium.html", "r") as file:
+            with open(settings.data_dir / "medium.html", "r") as file:
                 page = json.loads(file.read())
             return page
         except Exception:

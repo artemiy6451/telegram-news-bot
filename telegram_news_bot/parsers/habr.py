@@ -35,7 +35,7 @@ class HabrParser(Parser):
         for page_number in range(1, settings.page_count_to_check + 1):
             if settings.test_mode:
                 logger.warning("Running with test mode!")
-                with open(settings.base_dir / "../data" / "habr.html", "r") as file:
+                with open(settings.data_dir / "habr.html", "r") as file:
                     page = file.read()
             else:
                 page = self._get_page(page_number)
@@ -94,7 +94,7 @@ class HabrParser(Parser):
     def _get_page(self, page_number: int) -> str | None:
         logger.debug("Send get response to server.")
         self.response = self.session.get(settings.habr_url.format(page_number))
-        with open("data/habr.html", "wb") as file:
+        with open(settings.data_dir / "habr.html", "wb") as file:
             file.write(self.response.content)
         if self.response.status_code == HTTPStatus.OK:
             return self.response.text
