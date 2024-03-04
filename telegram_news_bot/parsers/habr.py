@@ -93,10 +93,17 @@ class HabrParser(Parser):
 
     def _get_page(self, page_number: int) -> str | None:
         logger.debug("Send get response to server.")
-        self.response = self.session.get(settings.habr_url.format(page_number))
-        with open(settings.data_dir / "habr.html", "wb") as file:
-            file.write(self.response.content)
-        if self.response.status_code == HTTPStatus.OK:
-            return self.response.text
-        else:
-            return None
+        try:
+            self.response = self.session.get(
+                settings.habr_url.format(page_number), timeout=10
+            )
+            with open(settings.data_dir / "habr.html", "wb") as file:
+                file.write(self.response.content)
+            if self.response.status_code == HTTPStatus.OK:
+                return self.response.text
+            else:
+                return None
+        except requests.exceptions.ReadTimeout as e:
+            logger.error(
+                f"Time out error: \n{e}\n{settings.habr_url.format(page_number)}"
+            )

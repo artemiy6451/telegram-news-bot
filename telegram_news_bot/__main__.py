@@ -9,11 +9,13 @@ from telegram_news_bot.telegram.bot import bot as telegram_bot
 from telegram_news_bot.telegram.bot import send_automatic_posts
 
 logger.add(
-    "file.log",
+    settings.data_dir / "telegram_news_bot.log",
     level=settings.log_level,
     colorize=False,
     backtrace=True,
     diagnose=True,
+    rotation="2 MB",
+    compression="zip",
 )
 
 if settings.test_mode:
