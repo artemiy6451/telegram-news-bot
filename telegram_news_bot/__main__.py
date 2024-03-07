@@ -4,7 +4,9 @@ import threading
 
 from loguru import logger
 
+from telegram_news_bot import parsers
 from telegram_news_bot.config import settings
+from telegram_news_bot.parser import Parser
 from telegram_news_bot.telegram.bot import bot as telegram_bot
 from telegram_news_bot.telegram.bot import send_automatic_posts
 
@@ -17,6 +19,17 @@ logger.add(
     rotation="2 MB",
     compression="zip",
 )
+
+all_parsers_list: list[Parser] = [
+    Parser(name="habr", verbose_name="Хабр", parser_obj=parsers.habr.HabrParser),
+    Parser(
+        name="medium",
+        verbose_name="Медиум",
+        parser_obj=parsers.medium.MediumParser,
+    ),
+]
+
+settings.avaliable_parsers_list = all_parsers_list
 
 if settings.test_mode:
     events = [

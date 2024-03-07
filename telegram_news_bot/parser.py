@@ -3,10 +3,12 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+from pydantic import BaseModel
+
 from telegram_news_bot.schemas import Post
 
 
-class Parser(ABC):
+class AbstarctParser(ABC):
     """Abstract class for parsers."""
 
     @abstractmethod
@@ -43,3 +45,11 @@ class Parser(ABC):
     def _get_page(self) -> Any | None:
         """Get page or return None."""
         raise NotImplementedError
+
+
+class Parser(BaseModel):
+    """Schema class for parser."""
+
+    name: str
+    verbose_name: str
+    parser_obj: type[AbstarctParser]

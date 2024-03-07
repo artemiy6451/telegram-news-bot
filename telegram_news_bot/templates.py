@@ -14,7 +14,7 @@ env = jinja2.Environment(
 )
 
 
-def render_template(template_name: str, data: dict | None) -> str:
+def render_template(template_name: str, data: dict | None = None) -> str:
     """Render jinja2 template."""
     if data is None:
         data = {}

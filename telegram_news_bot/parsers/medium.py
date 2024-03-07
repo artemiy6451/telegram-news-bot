@@ -9,12 +9,12 @@ from fake_headers import Headers
 from loguru import logger
 
 from telegram_news_bot.config import settings
-from telegram_news_bot.parser import Parser
+from telegram_news_bot.parser import AbstarctParser
 from telegram_news_bot.schemas import Post
 from telegram_news_bot.templates import render_template
 
 
-class MediumParser(Parser):
+class MediumParser(AbstarctParser):
     """Class for parsing data from medium site."""
 
     def __init__(self) -> None:

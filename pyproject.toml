@@ -35,7 +35,7 @@ line-length = 88
 include = '\.pyi?$'
 
 [tool.ruff]
-select = ["F", "E", "W", "I", "N", "PL", "C", "B", "D"]
+select = ["F", "E", "W", "I", "N", "PL", "C", "B"]
 
 # Same as Black.
 line-length = 89

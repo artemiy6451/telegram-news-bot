@@ -10,11 +10,11 @@ from fake_headers import Headers
 from loguru import logger
 
 from telegram_news_bot.config import settings
-from telegram_news_bot.parser import Parser
+from telegram_news_bot.parser import AbstarctParser
 from telegram_news_bot.schemas import Post
 
 
-class HabrParser(Parser):
+class HabrParser(AbstarctParser):
     """Class for parsing data from habr site."""
 
     def __init__(self) -> None:
