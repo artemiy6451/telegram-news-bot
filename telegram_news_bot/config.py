@@ -6,7 +6,7 @@ from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from telebot.types import Path
 
-from telegram_news_bot.parser import Parser
+from telegram_news_bot.parser import ParserSchema
 
 
 class Settings(BaseSettings):
@@ -26,8 +26,8 @@ class Settings(BaseSettings):
     page_count_to_check: int = 5
     channel_id: int = 0
     telegram_api: str = ""
-    current_parsers_list: list[Parser] = []
-    avaliable_parsers_list: list[Parser] = []
+    current_parsers_list: list[ParserSchema] = []
+    avaliable_parsers_list: list[ParserSchema] = []
 
     habr_url: str = "https://habr.com/ru/articles/page{}"
     medium_url: str = "https://medium.com/_/graphql"

@@ -12,7 +12,7 @@ from telegram_news_bot.templates import render_template
 
 
 def get_parsed_posts_from_all_sites() -> list[Post]:
-    """Get parsed articles from all sites(habr and medium)."""
+    """Get parsed articles from all sites in `current_parsers_list`."""
     logger.debug("Get parsed articles from all sites in list.")
     posts: list[Post] = []
     for parser in settings.current_parsers_list:
@@ -37,23 +37,26 @@ def is_exist_post(post: Post) -> bool:
     return False
 
 
+def send_post_transacional(bot: TeleBot, chanel_id: int, post: Post):
+    try:
+        formated_message = render_template("send_post.j2", post.model_dump())
+        bot.send_message(
+            chanel_id,
+            formated_message,
+            parse_mode="HTML",
+        )
+        post.name = post.name.replace('"', "").replace("'", "").replace("’", "")
+        add_post_to_database(post)
+    except Exception:
+        logger.error(f"Error: {traceback.format_exc()}\nPost: {post.model_dump()}")
+
+
 def send_posts(bot: TeleBot, chanel_id: int, posts: list[Post]):
     """Send all posts to telegram chanel."""
     logger.debug("Send all posts to telegram chanel.")
     for post in posts:
-        try:
-            if is_exist_post(post):
-                continue
-            formated_message = render_template("send_post.j2", post.model_dump())
-            logger.debug("Send message.")
-            bot.send_message(
-                chanel_id,
-                formated_message,
-                parse_mode="HTML",
-            )
-            post.name = post.name.replace('"', "").replace("'", "").replace("’", "")
-            add_post_to_database(post)
-            time.sleep(settings.time_for_send_post)
-        except Exception:
-            logger.error(f"Error: {traceback.format_exc()}\nPost: {post.model_dump()}")
+        if is_exist_post(post):
+            continue
+        send_post_transacional(bot, chanel_id, post)
+        time.sleep(settings.time_for_send_post)
     logger.debug("All post sended.")

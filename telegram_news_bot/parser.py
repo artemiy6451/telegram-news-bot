@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+from bs4 import ResultSet
 from pydantic import BaseModel
 
 from telegram_news_bot.schemas import Post
@@ -22,8 +23,13 @@ class AbstarctParser(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _parse_page(self) -> list[Post]:
-        """Parse articles from one page."""
+    def _transform_articles(self) -> list[Post]:
+        """Transform raw articles to post."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def _parse_raw_articles(self) -> ResultSet:
+        """Parse raw articles from one page."""
         raise NotImplementedError
 
     @abstractmethod
@@ -47,7 +53,7 @@ class AbstarctParser(ABC):
         raise NotImplementedError
 
 
-class Parser(BaseModel):
+class ParserSchema(BaseModel):
     """Schema class for parser."""
 
     name: str
