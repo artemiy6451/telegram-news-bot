@@ -6,4 +6,5 @@ WORKDIR /app
 COPY . /app
 RUN poetry lock
 RUN poetry install
+
 CMD ["poetry", "run", "python", "-m", "telegram_news_bot"]
