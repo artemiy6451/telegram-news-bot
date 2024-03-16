@@ -6,6 +6,5 @@ WORKDIR /app
 COPY . /app
 RUN poetry lock
 RUN poetry install
-RUN set -ex && cat database.sql | sqlite3 database.db 
-ENV NUM_THREADS=2
+
 CMD ["poetry", "run", "python", "-m", "telegram_news_bot"]

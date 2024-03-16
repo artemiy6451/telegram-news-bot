@@ -9,12 +9,12 @@ from fake_headers import Headers
 from loguru import logger
 
 from telegram_news_bot.config import settings
-from telegram_news_bot.parser import Parser
+from telegram_news_bot.parser import AbstarctParser
 from telegram_news_bot.schemas import Post
 from telegram_news_bot.templates import render_template
 
 
-class MediumParser(Parser):
+class MediumParser(AbstarctParser):
     """Class for parsing data from medium site."""
 
     def __init__(self) -> None:
@@ -24,16 +24,16 @@ class MediumParser(Parser):
             browser="chrome", os="win", headers=True
         ).generate()
 
-    def parse(self) -> list[Post]:
+    def parse(self, tags: list[str]) -> list[Post]:
         """Parse articles from medium site."""
         logger.debug("Parse medium articles.")
-        return self._parse_all_tags()
+        return self._parse_all_tags(tags)
 
-    def _parse_all_tags(self) -> list[Post]:
+    def _parse_all_tags(self, tags: list[str]) -> list[Post]:
         """Parse all pages for all tags."""
         logger.debug("Parse pages for all tags.")
         articles: list[Post] = []
-        for tag in settings.medium_tags:
+        for tag in tags:
             articles.extend(self._parse_all_pages_for_tag(tag))
         return articles
 
@@ -42,10 +42,7 @@ class MediumParser(Parser):
         logger.debug(f"Parse pages for {tag} tag.")
         articles: list[Post] = []
         for page_number in range(0, settings.page_count_to_check):
-            if settings.test_mode:
-                page = self.__test_mode_parse()
-            else:
-                page = self._get_page(_from=page_number * 25, limit=25, tag_slug=tag)
+            page = self._get_page(_from=page_number * 25, limit=25, tag_slug=tag)
             if page is None:
                 continue
             articles.extend(self._parse_page(page, page_number))
@@ -102,16 +99,6 @@ class MediumParser(Parser):
         except requests.exceptions.ConnectionError as error:
             logger.error(f"Can not get medium page: \n{error}")
 
-    def __test_mode_parse(self) -> dict | None:
-        logger.warning("Running with test mode!")
-        try:
-            with open(settings.data_dir / "medium.html", "r") as file:
-                page = json.loads(file.read())
-            return page
-        except Exception:
-            page = self._get_page(_from=0, limit=25, tag_slug=settings.medium_tags[0])
-            return page
-
     @staticmethod
     def __get_rendered_query(
         tag_slug: str,
@@ -123,5 +110,7 @@ class MediumParser(Parser):
             "limit": limit,
             "tag_slug": tag_slug,
         }
-        query = json.loads(render_template("medium_get_post_graphql.j2", data=data))
+        query = json.loads(
+            render_template("parsers/medium_get_post_graphql.j2", data=data)
+        )
         return query
