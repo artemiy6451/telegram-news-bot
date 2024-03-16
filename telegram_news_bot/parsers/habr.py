@@ -31,13 +31,15 @@ class HabrParser(AbstarctParser):
         Return list[Post] from all pages.
         """
         logger.debug("Parsig habr site.")
-        articles: list[Post] = self._collect_all_articles()[::-1]
+        articles: list[Post] = []
+        for tag in settings.habr_tags:
+            articles.extend(self._collect_all_articles_by_tag(tag)[::-1])
         return articles
 
-    def _collect_all_articles(self) -> list[Post]:
+    def _collect_all_articles_by_tag(self, tag: str) -> list[Post]:
         articles: list[Post] = []
         for page_number in range(1, settings.page_count_to_check + 1):
-            page = self._get_page(page_number)
+            page = self._get_page(tag, page_number)
             if page is None:
                 continue
             raw_articles = self._parse_raw_articles(page, page_number)
@@ -92,17 +94,22 @@ class HabrParser(AbstarctParser):
             logger.debug(f"Can not parse url: {e}")
             return "https://habr.com"
 
-    def _get_page(self, page_number: int) -> str | None:
+    def _get_page(self, tag: str, page_number: int) -> str | None:
         logger.debug("Send get response to server.")
         try:
             self.response = self.session.get(
-                settings.habr_url.format(page_number), timeout=5
+                settings.habr_url.format(page=page_number, tag=tag), timeout=5
             )
             if self.response.status_code == HTTPStatus.OK:
                 return self.response.text
             else:
+                logger.warning(
+                    f"""Something wrong with server: {
+                        settings.habr_url.format(page=page_number, tag=tag)
+                    }"""
+                )
                 return None
         except requests.exceptions.RequestException as e:
             logger.error(
-                f"Request error: \n{e}\n{settings.habr_url.format(page_number)}"
+                f"Request error: \n{e}\n{settings.habr_url.format(page_number, tag=tag)}"
             )

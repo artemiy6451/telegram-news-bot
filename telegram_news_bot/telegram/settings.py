@@ -40,7 +40,7 @@ def send_parsers_list_to_change(bot: TeleBot, channel_id: int):
     formated_message = render_template(
         "select_parsers.j2",
         {
-            "current_parsers_list": settings.current_parsers_list,
+            "selected_parsers_list": settings.selected_parsers_list,
             "avaliable_parsers_list": settings.avaliable_parsers_list,
         },
     )
@@ -57,7 +57,7 @@ def update_message_for_change_parsers_list(bot: TeleBot, message: Message):
     formated_message = render_template(
         "select_parsers.j2",
         {
-            "current_parsers_list": settings.current_parsers_list,
+            "selected_parsers_list": settings.selected_parsers_list,
             "avaliable_parsers_list": settings.avaliable_parsers_list,
         },
     )

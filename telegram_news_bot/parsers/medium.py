@@ -42,10 +42,7 @@ class MediumParser(AbstarctParser):
         logger.debug(f"Parse pages for {tag} tag.")
         articles: list[Post] = []
         for page_number in range(0, settings.page_count_to_check):
-            if settings.test_mode:
-                page = self.__test_mode_parse()
-            else:
-                page = self._get_page(_from=page_number * 25, limit=25, tag_slug=tag)
+            page = self._get_page(_from=page_number * 25, limit=25, tag_slug=tag)
             if page is None:
                 continue
             articles.extend(self._parse_page(page, page_number))
@@ -101,16 +98,6 @@ class MediumParser(AbstarctParser):
                 return None
         except requests.exceptions.ConnectionError as error:
             logger.error(f"Can not get medium page: \n{error}")
-
-    def __test_mode_parse(self) -> dict | None:
-        logger.warning("Running with test mode!")
-        try:
-            with open(settings.data_dir / "medium.html", "r") as file:
-                page = json.loads(file.read())
-            return page
-        except Exception:
-            page = self._get_page(_from=0, limit=25, tag_slug=settings.medium_tags[0])
-            return page
 
     @staticmethod
     def __get_rendered_query(

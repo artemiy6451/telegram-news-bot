@@ -12,10 +12,10 @@ from telegram_news_bot.templates import render_template
 
 
 def get_parsed_posts_from_all_sites() -> list[Post]:
-    """Get parsed articles from all sites in `current_parsers_list`."""
+    """Get parsed articles from all sites in `selected_parsers_list`."""
     logger.debug("Get parsed articles from all sites in list.")
     posts: list[Post] = []
-    for parser in settings.current_parsers_list:
+    for parser in settings.selected_parsers_list:
         posts = parser.parser_obj().parse()
     return posts
 

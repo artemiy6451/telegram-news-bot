@@ -26,13 +26,14 @@ class Settings(BaseSettings):
     page_count_to_check: int = 5
     channel_id: int = 0
     telegram_api: str = ""
-    current_parsers_list: list[ParserSchema] = []
+    selected_parsers_list: list[ParserSchema] = []
     avaliable_parsers_list: list[ParserSchema] = []
 
-    habr_url: str = "https://habr.com/ru/articles/page{}"
+    habr_url: str = "https://habr.com/ru/flows/{tag}/articles/page{page}"
     medium_url: str = "https://medium.com/_/graphql"
 
     medium_tags: list[str] = ["programming"]
+    habr_tags: list[str] = ["develop"]
 
 
 settings = Settings()

@@ -22,7 +22,11 @@ logger.add(
 )
 
 all_parsers_list: list[ParserSchema] = [
-    ParserSchema(name="habr", verbose_name="Хабр", parser_obj=parsers.habr.HabrParser),
+    ParserSchema(
+        name="habr",
+        verbose_name="Хабр",
+        parser_obj=parsers.habr.HabrParser,
+    ),
     ParserSchema(
         name="medium",
         verbose_name="Медиум",
@@ -35,6 +39,13 @@ settings.avaliable_parsers_list = all_parsers_list
 if settings.test_mode:
     events: list[tuple[Callable, tuple]] = [
         (telegram_bot.infinity_polling, ()),
+    ]
+    settings.selected_parsers_list = [
+        ParserSchema(
+            name="habr",
+            verbose_name="Хабр",
+            parser_obj=parsers.habr.HabrParser,
+        ),
     ]
 else:
     events: list[tuple[Callable, tuple]] = [

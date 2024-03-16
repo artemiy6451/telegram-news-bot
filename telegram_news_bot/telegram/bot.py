@@ -57,9 +57,9 @@ def process_callback_data(query: CallbackQuery):
             send_parsers_list_to_change(bot, query.message.chat.id)
         case r"^select_parser_\d+$":
             parser_id = int(query.data.split("_")[-1])
-            settings.current_parsers_list.append(
+            settings.selected_parsers_list.append(
                 settings.avaliable_parsers_list[parser_id]
             )
             settings.avaliable_parsers_list.pop(parser_id)
             update_message_for_change_parsers_list(bot=bot, message=query.message)
-            logger.debug(f"{settings.current_parsers_list}")
+            logger.debug(f"{settings.selected_parsers_list}")
