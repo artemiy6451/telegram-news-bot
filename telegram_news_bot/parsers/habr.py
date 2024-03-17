@@ -25,18 +25,20 @@ class HabrParser(AbstarctParser):
             browser="chrome", os="win", headers=True
         ).generate()
 
-    def parse(self) -> list[Post]:
+    def parse(self, tags: list[str]) -> list[Post]:
         """Parse data from first `n` pages of habr.
 
         Return list[Post] from all pages.
         """
         logger.debug("Parsig habr site.")
         articles: list[Post] = []
-        for tag in settings.habr_tags:
+        for tag in tags:
             articles.extend(self._collect_all_articles_by_tag(tag)[::-1])
         return articles
 
     def _collect_all_articles_by_tag(self, tag: str) -> list[Post]:
+        """Parse all articles from habr by tag."""
+        logger.debug(f"Parsig articles by tag {tag}.")
         articles: list[Post] = []
         for page_number in range(1, settings.page_count_to_check + 1):
             page = self._get_page(tag, page_number)

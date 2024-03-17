@@ -24,16 +24,16 @@ class MediumParser(AbstarctParser):
             browser="chrome", os="win", headers=True
         ).generate()
 
-    def parse(self) -> list[Post]:
+    def parse(self, tags: list[str]) -> list[Post]:
         """Parse articles from medium site."""
         logger.debug("Parse medium articles.")
-        return self._parse_all_tags()
+        return self._parse_all_tags(tags)
 
-    def _parse_all_tags(self) -> list[Post]:
+    def _parse_all_tags(self, tags: list[str]) -> list[Post]:
         """Parse all pages for all tags."""
         logger.debug("Parse pages for all tags.")
         articles: list[Post] = []
-        for tag in settings.medium_tags:
+        for tag in tags:
             articles.extend(self._parse_all_pages_for_tag(tag))
         return articles
 
@@ -110,5 +110,7 @@ class MediumParser(AbstarctParser):
             "limit": limit,
             "tag_slug": tag_slug,
         }
-        query = json.loads(render_template("medium_get_post_graphql.j2", data=data))
+        query = json.loads(
+            render_template("parsers/medium_get_post_graphql.j2", data=data)
+        )
         return query

@@ -22,7 +22,7 @@ class DataBase:
 
     def insert_post(self, post: Post) -> None:
         """Insert post to databsae."""
-        insert_sql = render_template("insert_post.j2", post.model_dump())
+        insert_sql = render_template("database/insert_post.j2", post.model_dump())
         try:
             self.cursor.execute(insert_sql)
             self.connection.commit()
@@ -33,7 +33,7 @@ class DataBase:
 
     def select_post(self, post: Post) -> list | None:
         """Select post form database."""
-        select_sql = render_template("select_post.j2", post.model_dump())
+        select_sql = render_template("database/select_post.j2", post.model_dump())
         try:
             self.cursor.execute(select_sql)
             return self.cursor.fetchall()

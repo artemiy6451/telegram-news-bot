@@ -28,12 +28,10 @@ class Settings(BaseSettings):
     telegram_api: str = ""
     selected_parsers_list: list[ParserSchema] = []
     avaliable_parsers_list: list[ParserSchema] = []
+    waiting_for: dict[str, ParserSchema] = {}
 
     habr_url: str = "https://habr.com/ru/flows/{tag}/articles/page{page}"
     medium_url: str = "https://medium.com/_/graphql"
-
-    medium_tags: list[str] = ["programming"]
-    habr_tags: list[str] = ["develop"]
 
 
 settings = Settings()

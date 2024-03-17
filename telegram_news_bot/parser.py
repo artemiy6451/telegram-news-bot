@@ -18,7 +18,7 @@ class AbstarctParser(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def parse(self) -> list[Post]:
+    def parse(self, tags: list[str]) -> list[Post]:
         """Parse all articles."""
         raise NotImplementedError
 
@@ -59,3 +59,4 @@ class ParserSchema(BaseModel):
     name: str
     verbose_name: str
     parser_obj: type[AbstarctParser]
+    tags: list[str]

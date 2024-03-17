@@ -8,8 +8,8 @@ from loguru import logger
 from telegram_news_bot import parsers
 from telegram_news_bot.config import settings
 from telegram_news_bot.parser import ParserSchema
-from telegram_news_bot.telegram.bot import bot as telegram_bot
-from telegram_news_bot.telegram.bot import send_automatic_posts
+from telegram_news_bot.telegram.commands import bot as telegram_bot
+from telegram_news_bot.telegram.start import send_automatic_posts
 
 logger.add(
     settings.data_dir / "telegram_news_bot.log",
@@ -26,11 +26,13 @@ all_parsers_list: list[ParserSchema] = [
         name="habr",
         verbose_name="Хабр",
         parser_obj=parsers.habr.HabrParser,
+        tags=["develop"],
     ),
     ParserSchema(
         name="medium",
         verbose_name="Медиум",
         parser_obj=parsers.medium.MediumParser,
+        tags=["programming"],
     ),
 ]
 
@@ -45,6 +47,7 @@ if settings.test_mode:
             name="habr",
             verbose_name="Хабр",
             parser_obj=parsers.habr.HabrParser,
+            tags=["develop"],
         ),
     ]
 else:

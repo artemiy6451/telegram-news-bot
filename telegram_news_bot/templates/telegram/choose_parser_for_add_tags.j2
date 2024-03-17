@@ -1,0 +1,7 @@
+Вот список сайтов, на которых ты можешь добавить теги:
+{% if not selected_parsers_list %}
+Ой, а тут еще ничего нет...
+{% endif %}
+{%for parser in selected_parsers_list %}
+{{ loop.index }}) {{ parser.verbose_name }}
+{% endfor %}
